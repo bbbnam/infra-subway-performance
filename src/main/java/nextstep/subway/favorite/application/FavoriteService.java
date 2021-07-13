@@ -13,10 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -38,7 +35,14 @@ public class FavoriteService {
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(LoginMember loginMember, Pageable pageable) {
-        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId(), pageable);
+        Long favoriteId = favoriteRepository.findFirstByMemberIdOrderByIdDesc(loginMember.getId())
+                .map(Favorite::getId)
+                .orElse(0L);
+
+        List<Favorite> favorites = favoriteRepository.findByMemberIdOrderByIdDesc(favoriteId, loginMember.getId(),
+                pageable);
+
+
         Map<Long, Station> stations = extractStations(favorites);
 
         return favorites.stream()
