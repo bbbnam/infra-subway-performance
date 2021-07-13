@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
-    @Query("SELECT f FROM favorite f WHERE f.id = <= :favoriteId AND f.memberId = :memberId")
+    @Query("SELECT f FROM Favorite f WHERE f.id <= :favoriteId AND f.memberId = :memberId")
     List<Favorite> findByMemberIdOrderByIdDesc(@Param("favoriteId") Long favoriteId, @Param("memberId") Long memberId,
                                                Pageable pageable);
 
